@@ -1,0 +1,60 @@
+/* Réplica del chasis de juegos.elconfidencial.com (tokens y reglas sacados de index-*.css y CrucigramaPage-*.css, 26/10/2026).
+   Solo para el standalone index.html; en live.js se usa el chasis real. */
+:root{--m3-neutral-0:#fff;--m3-neutral-25:#f9f9f9;--m3-neutral-50:#efefef;--m3-neutral-100:#e2e2e2;--m3-neutral-200:#d4d4d4;--m3-neutral-300:#a3a3a3;--m3-neutral-400:#737373;--m3-neutral-900:#121212;--m3-blue-900:#0f2124;--m3-text-primary:#121212;--m3-text-secondary:#737373;--m3-border-default:#bfc7ce;--m3-border-strong:#121212;--m3-link-default:#2380be;
+  --font-serif:"Confi Serif",Georgia,"Times New Roman",serif;--font-sans:"Confi Sans",-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
+  --gs-2:8px;--gs-3:12px;--gs-4:16px;--gs-5:20px;--gs-6:24px;--gs-8:32px;--gs-10:40px;--gs-16:64px;--gs-24:96px;--r-sm:2px;--r-md:4px;--r-full:999px;--line:.7px}
+@font-face{font-family:"Confi Sans";src:url("fonts/ConfiSans-700-Bold.woff2") format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"Confi Sans";src:url("fonts/ConfiSans-500-Medium.woff2") format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"Confi Sans";src:url("fonts/ConfiSans-400-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Confi Serif";src:url("fonts/ConfiSerif-700-Bold.woff2") format("woff2");font-weight:700;font-display:swap}
+*{box-sizing:border-box}
+html,body{margin:0;background:#fff;color:var(--m3-text-primary);font-family:var(--font-sans)}
+button{font:inherit}
+
+/* cabecera EC (simplificada) */
+.site{height:68px;border-bottom:1px solid var(--m3-text-primary);display:flex;align-items:center;padding:0 144px;justify-content:space-between;font-weight:700;font-size:15px}
+.site__left,.site__right{display:flex;align-items:center;gap:28px}
+.site__logo{font-family:var(--font-serif);font-size:30px;letter-spacing:-.5px;text-decoration:none;color:var(--m3-text-primary)}
+.site__logo span{color:#c78c5a;font-weight:400;font-size:26px}
+.site__cta{background:#cfd5d9;padding:9px 16px;text-decoration:none;color:var(--m3-text-primary)}
+.site__login{text-decoration:none;color:var(--m3-text-primary)}
+.site__dot{width:6px;height:6px;border-radius:50%;background:#e30613;display:inline-block;margin-right:6px}
+
+/* shell */
+.skin-row{display:flex;justify-content:center}
+.shell{flex:1 1 auto;min-width:0;max-width:1200px;margin:0;background:var(--m3-neutral-0);padding:var(--gs-10) var(--gs-6) var(--gs-24);overflow-x:clip;width:100%}
+.balcony{border-bottom:var(--line) solid var(--m3-border-default);margin-bottom:var(--gs-6)}
+.back{display:flex;width:fit-content;align-items:center;gap:6px;margin-bottom:var(--gs-3);font-weight:600;font-size:13px;color:var(--m3-text-secondary);text-decoration:none}
+.balcony__title{display:inline-block;padding-bottom:var(--gs-3);margin:0 0 -1px;border-bottom:4px solid var(--m3-text-primary);font-weight:700;font-size:22px;line-height:1.2}
+.ad{display:flex;justify-content:center}
+.ad--billboard{margin-bottom:var(--gs-6)}
+.ad__slot{background:var(--m3-neutral-50);color:var(--m3-neutral-300);font-size:11px;letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;justify-content:center}
+.ad--billboard .ad__slot{width:980px;height:250px;max-width:100%}
+.row{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:var(--gs-8);align-items:start}
+.main{min-width:0}
+.aside{position:sticky;top:var(--gs-6)}
+.aside .ad__slot{width:300px;height:600px}
+.game-area{display:flex;flex-direction:column;gap:var(--gs-5)}
+
+/* barra de meta */
+.meta{display:flex;flex-wrap:wrap;gap:var(--gs-5) var(--gs-8);padding:var(--gs-4) 0;border-top:var(--line) solid var(--m3-border-default);border-bottom:var(--line) solid var(--m3-border-default)}
+.meta__item{display:flex;flex-direction:column;gap:2px}
+.meta__label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:1.2px;color:var(--m3-text-secondary)}
+.meta__value{font-weight:700;font-size:18px;color:var(--m3-text-primary);font-variant-numeric:tabular-nums}
+.help{margin-left:auto;align-self:center;flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border:var(--line) solid var(--m3-border-default);border-radius:var(--r-full);background:var(--m3-neutral-0);font-weight:600;font-size:13px;color:var(--m3-text-secondary);cursor:pointer}
+
+/* fila de controles */
+.controls{display:flex;gap:var(--gs-3);align-items:stretch}
+.seg{flex:1 1 auto;display:flex;border:var(--line) solid var(--m3-border-strong);border-radius:var(--r-sm);overflow:hidden}
+.seg__cell{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;gap:var(--gs-2);min-height:46px;padding:0 10px;border:none;background:var(--m3-neutral-0);color:var(--m3-text-primary);font-weight:600;font-size:14px;cursor:pointer}
+.seg__cell+.seg__cell{border-left:var(--line) solid var(--m3-border-strong)}
+.seg__cell:disabled{opacity:.4;cursor:default}
+.seg__cell--primary{background:var(--m3-text-primary);color:var(--m3-neutral-0)}
+.seg__cell .badge{font-size:11px;font-weight:800;background:var(--m3-neutral-50);color:var(--m3-text-secondary);border-radius:var(--r-full);padding:1px 7px}
+.exit{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;min-height:46px;padding:0 16px;border:var(--line) solid var(--m3-border-default);border-radius:var(--r-sm);background:var(--m3-neutral-0);color:var(--m3-text-secondary);font-weight:600;font-size:14px;cursor:pointer}
+
+.footer{margin-top:40px;background:#0f2124;color:#fff;height:120px;display:flex;align-items:center;padding:0 120px;font-family:var(--font-serif);font-size:24px}
+
+@media (max-width:900px){.row{grid-template-columns:minmax(0,1fr)}.aside{position:static}.aside .ad__slot{width:300px;height:250px}.site{padding:0 24px}}
+@media (max-width:767px){.shell{padding:var(--gs-6) var(--gs-4) var(--gs-16)}.site{height:50px;padding:0 16px}.site__left span,.site__login{display:none}.ad--billboard .ad__slot{width:320px;height:100px}}
+@media (max-width:560px){.help span{display:none}.help{padding:0;width:34px;justify-content:center}.seg__cell span.lbl{display:none}}

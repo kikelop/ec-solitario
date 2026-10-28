@@ -1,0 +1,16 @@
+# Fuentes Confi — propiedad de El Confidencial, no se publican
+prototipo/fonts/
+
+# Carpetas de deploy a Vercel (copias del módulo + fuentes), se regeneran
+prototipo/ec-solitario/
+prototipo/solitario-portfolio/
+
+# Vídeos grabados con tools/record-video.js
+prototipo/tools/*.mp4
+
+# Playwright (symlink local)
+node_modules
+
+# OS / Vercel
+.DS_Store
+.vercel

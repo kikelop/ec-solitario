@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#1D4044">
+  <title>Solitario · Kike López</title>
+  <style>
+    @font-face { font-family: "Confi Sans"; src: url("../fonts/ConfiSans-700-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+    @font-face { font-family: "Confi Sans"; src: url("../fonts/ConfiSans-500-Medium.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+    @font-face { font-family: "Confi Sans"; src: url("../fonts/ConfiSans-400-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+    @font-face { font-family: "Confi Serif"; src: url("../fonts/ConfiSerif-700-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+    :root { --font-sans: "Confi Sans", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; --font-serif: "Confi Serif", Georgia, serif; }
+    * { box-sizing: border-box; }
+    /* versión portfolio: solo el tablero, todo el fondo del mismo azul del tapete */
+    html, body { margin: 0; min-height: 100%; background: #1D4044; }
+    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 0; }
+    .wrap { width: 100%; max-width: 1400px; }
+    .sol { border-radius: 0; }
+    @media (max-width: 900px) { .wrap { max-width: none; padding: 0 24px; } }
+    @media (max-width: 700px) { body { padding: 0; align-items: flex-start; } .wrap { padding: 0 16px; } }
+  </style>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="wrap"><div id="solitaire"></div></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="../cards.js"></script>
+  <script src="../game.js"></script>
+  <script>Solitaire.mount(document.getElementById('solitaire'), { persist: false, cardW: 131 });</script>
+</body>
+</html>

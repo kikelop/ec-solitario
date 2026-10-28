@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Solitario · Juegos · El Confidencial</title>
+  <link rel="stylesheet" href="chassis.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- cabecera EC simplificada -->
+  <header class="site">
+    <div class="site__left"><span>☰ Menú</span><span><i class="site__dot"></i>Últimas noticias</span></div>
+    <a class="site__logo" href="#">ElConfidencial<span>25</span></a>
+    <div class="site__right"><a class="site__login" href="#">Iniciar sesión</a><a class="site__cta" href="#">Suscríbete</a></div>
+  </header>
+
+  <div class="skin-row">
+    <main class="shell">
+      <header class="balcony">
+        <a class="back" href="#">‹ Volver a juegos</a>
+        <h1 class="balcony__title" id="game-title">Solitario</h1>
+      </header>
+      <aside class="ad ad--billboard" aria-label="Publicidad"><div class="ad__slot">publicidad</div></aside>
+      <div class="row">
+        <section class="main" aria-labelledby="game-title">
+          <div class="game-area">
+            <div class="meta">
+              <div class="meta__item"><span class="meta__label">Modo</span><span class="meta__value" data-sol="mode">Partida libre</span></div>
+              <div class="meta__item"><span class="meta__label">Tiempo</span><span class="meta__value" data-sol="time">00:00</span></div>
+              <div class="meta__item"><span class="meta__label">Jugadas</span><span class="meta__value" data-sol="moves">0</span></div>
+              <div class="meta__item"><span class="meta__label">Reparto</span><span class="meta__value" data-sol="draw">Roba 1</span></div>
+              <button type="button" class="help" data-sol-action="help" aria-label="Cómo se juega">? <span>Cómo se juega</span></button>
+            </div>
+            <div id="solitaire"></div>
+            <div class="controls">
+              <div class="seg" role="group" aria-label="Controles del juego">
+                <button type="button" class="seg__cell" data-sol-action="undo" aria-label="Deshacer"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 9h10a6 6 0 0 1 0 12h-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="lbl">Deshacer</span></button>
+                <button type="button" class="seg__cell" data-sol-action="hint" aria-label="Pista"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.6 1 1.4 1 2.5h6c0-1.1.3-1.9 1-2.5A6 6 0 0 0 12 3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span class="lbl">Pista</span></button>
+                <button type="button" class="seg__cell seg__cell--primary" data-sol-action="new" aria-label="Nueva partida"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="lbl">Nueva partida</span></button>
+              </div>
+              <button type="button" class="exit" data-sol-action="exit" aria-label="Salir">⎋ <span>Salir</span></button>
+            </div>
+          </div>
+        </section>
+        <aside class="aside"><div class="ad" aria-label="Publicidad"><div class="ad__slot">publicidad</div></div></aside>
+      </div>
+    </main>
+  </div>
+  <footer class="footer">ElConfidencial</footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="cards.js"></script>
+  <script src="game.js"></script>
+  <script>Solitaire.mount(document.getElementById('solitaire'));</script>
+</body>
+</html>

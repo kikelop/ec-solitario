@@ -1,0 +1,126 @@
+/* Solitario · módulo de juego. Todo va dentro de .sol (se monta en la columna principal del chasis de Juegos).
+   Colores = tokens ec.color.v2 (Figma «Diseño final», 27/10/2026); el rojo #D1322B equivale a core/rojo/800, pendiente de publicar. */
+.sol {
+  --ec-azul-700: #1D4044;      /* core/azul/700 · corporativo/azul-claro → tapete e interior del dorso */
+  --ec-azul-800: #152E32;      /* corporativo/azul-medio → palos negros */
+  --ec-azul-900: #0F2124;      /* core/azul/900 → sombras */
+  --ec-azul-400: #576466;      /* core/azul/400 → borde de carta */
+  --ec-neutral-25: #F9F9F9;    /* core/neutral/25 → papel, marco del dorso, isotipo */
+  --ec-neutral-0: #FFFFFF;     /* core/neutral/0 → huecos y pistas de palo (con opacidad) */
+  --ec-rojo: #D1322B;          /* ≈ core/rojo/800 (no publicado) → palos rojos */
+  --ec-bronce-700: #CC7A4B;    /* core/bronce/700 → alternativa ámbar para los rojos */
+  --ec-amarillo: #F2C001;      /* amarillo cabecera EC → solo foco de teclado */
+
+  --sol-felt: var(--ec-azul-700);
+  --sol-slot: rgba(255,255,255,0.14);
+  --sol-slot-stroke: rgba(255,255,255,0.32);
+  --sol-red: var(--ec-rojo);
+  --sol-black: var(--ec-azul-800);
+  --sol-border: var(--ec-azul-400);
+  --sol-paper: var(--ec-neutral-25);
+  --card-w: 75px; --card-h: calc(var(--card-w) * 1.4);
+  --gap: 12px;
+  position: relative; display: block; overflow: hidden; background: var(--sol-felt); border-radius: 4px; padding: var(--pad, var(--gap));
+  -webkit-user-select: none; user-select: none; touch-action: manipulation; font-family: var(--font-sans, "Confi Sans", sans-serif);
+}
+.sol.is-dragging-any { overflow: visible; } /* al arrastrar fuera del tablero la carta no se recorta */
+.sol[data-felt="verde"] { --sol-felt: #2E6B49; }
+.sol[data-felt="gris"] { --sol-felt: #EFEFEF; --sol-slot: rgba(0,0,0,0.06); --sol-slot-stroke: rgba(0,0,0,0.18); }
+.sol[data-felt="blanco"] { --sol-felt: #FFFFFF; --sol-slot: rgba(0,0,0,0.04); --sol-slot-stroke: rgba(0,0,0,0.2); }
+.sol[data-felt="gris"] .pile--foundation svg.hint path, .sol[data-felt="blanco"] .pile--foundation svg.hint path { fill: var(--ec-azul-900); opacity: .35; }
+.sol[data-red="ambar"] { --sol-red: var(--ec-bronce-700); }
+.sol * { box-sizing: border-box; }
+
+/* ---------- rejilla ---------- */
+.sol .table { position: relative; display: grid; gap: var(--gap); width: 100%; }
+.sol[data-layout="rail"] .table { grid-template-columns: var(--card-w) 1fr var(--card-w); grid-template-areas: "stock tableau found"; column-gap: var(--gap-l, var(--gap)); row-gap: var(--gap); }
+.sol[data-layout="top"] .table { grid-template-rows: auto 1fr; grid-template-areas: "top" "tableau"; row-gap: calc(var(--gap) + 6px); } /* +6 px: el grosor del mazo no se pega a las columnas */
+.sol .zone--top { display: contents; }
+.sol[data-layout="top"] .zone--top { display: flex; justify-content: space-between; grid-area: top; }
+.sol .piles { display: flex; gap: var(--gap); }
+.sol .piles--stock { grid-area: stock; flex-direction: column; }
+.sol .piles--foundations { grid-area: found; flex-direction: column; }
+.sol[data-layout="top"] .piles--stock, .sol[data-layout="top"] .piles--foundations { flex-direction: row; }
+.sol .zone--tableau { grid-area: tableau; display: grid; grid-template-columns: repeat(7, var(--card-w)); gap: var(--gap); justify-content: center; align-content: start; }
+
+.sol .pile { position: relative; width: var(--card-w); height: var(--card-h); border-radius: 4px; background: var(--sol-slot); box-shadow: inset 0 0 0 1px var(--sol-slot-stroke); }
+.sol .pile--stock { cursor: pointer; outline: none; }
+.sol .pile--stock:focus-visible { box-shadow: inset 0 0 0 2px var(--ec-amarillo); }
+.sol .pile--foundation svg.hint { position: absolute; inset: 0; margin: auto; width: 42%; height: 42%; opacity: 0.5; }
+.sol .pile--foundation svg.hint path { fill: var(--ec-neutral-0); }
+.sol .pile--column { height: auto; min-height: var(--card-h); }
+.sol .pile.is-target { box-shadow: inset 0 0 0 2.5px var(--ec-neutral-0); } /* destino válido al arrastrar: blanco */
+
+/* estado «renovar mazo» (Figma 56:39896): carta del color del tapete con borde azul/400 e icono de dos flechas al 50 % */
+.sol .pile--stock svg.recycle { position: absolute; inset: 0; width: 100%; height: 100%; display: none; cursor: pointer; overflow: visible; }
+.sol .pile--stock.is-empty svg.recycle { display: block; }
+.sol .pile--stock svg.recycle .recycle-card { fill: var(--sol-felt); stroke: var(--sol-border); stroke-width: 1; }
+.sol .pile--stock svg.recycle .recycle-icon { transform-box: fill-box; transform-origin: 50% 50%; transition: transform 0.18s ease, opacity 0.18s ease; opacity: 0.5; }
+.sol .pile--stock svg.recycle .recycle-icon path { fill: var(--ec-neutral-0); }
+.sol .pile--stock.is-empty:hover svg.recycle .recycle-icon { opacity: 0.85; transform: scale(1.1); }
+
+/* ---------- cartas ---------- */
+/* sombras con box-shadow en el contenedor (más barato que filter en el svg: 52 cartas en móvil) */
+.sol .card { position: absolute; left: 0; top: 0; width: var(--card-w); height: var(--card-h); border-radius: 4px; cursor: grab; touch-action: none; will-change: transform; transform-origin: 50% 50%;
+  box-shadow: 0 1px 1.5px rgba(15,33,36,0.25); transition: box-shadow 0.2s ease; }
+.sol .card svg { display: block; width: 100%; height: 100%; transition: transform 0.18s ease; transform-origin: 50% 50%; }
+.sol .card svg.is-flipping { transition: none; }
+.sol .card.is-down { cursor: default; }
+.sol .card.is-stock:not(.is-moving) { box-shadow: 0 0.5px 1px rgba(15,33,36,0.16); } /* mazo: las tres apiladas no suman una sombra pesada */
+.sol .card.is-stock-top { cursor: pointer; }
+.sol .card.is-moving { box-shadow: 0 5px 9px rgba(15,33,36,0.2); }
+.sol .card.is-dragging { z-index: 1000 !important; cursor: grabbing; box-shadow: 0 8px 14px rgba(15,33,36,0.24); }
+.sol .card.no-anim { transition: none; }
+.sol .card.is-flipping, .sol .card.is-flipping.is-moving { box-shadow: none; } /* la sombra vuelve al terminar el giro */
+.sol .card.is-hint { box-shadow: 0 0 0 2.5px var(--ec-neutral-0), 0 4px 8px rgba(15,33,36,0.25); } /* pista: blanco */
+.sol .pile.is-hint { box-shadow: inset 0 0 0 2.5px var(--ec-neutral-0); }
+/* hover sutil, solo con ratón */
+@media (hover: hover) and (pointer: fine) {
+  .sol .card:not(.is-down):not(.is-dragging):not(.is-moving):hover svg,
+  .sol .card.is-stock-top:not(.is-moving):hover svg { transform: translateY(-2px); }
+  .sol .card:not(.is-down):not(.is-dragging):not(.is-moving):hover,
+  .sol .card.is-stock-top:not(.is-moving):hover { box-shadow: 0 3px 6px rgba(15,33,36,0.2); }
+}
+
+/* cara */
+.sol .paper { fill: var(--sol-paper); stroke: var(--sol-border); stroke-width: 1; }
+.sol .rank { font-family: var(--font-serif, "Confi Serif", serif); font-weight: 700; }
+.sol .face--red .rank, .sol .face--red path { fill: var(--sol-red); }
+.sol .face--black .rank, .sol .face--black path { fill: var(--sol-black); }
+/* dorso */
+.sol .back-paper { fill: var(--sol-paper); stroke: var(--sol-border); stroke-width: 1; }
+.sol .back-felt { fill: var(--sol-felt); }
+.sol .back-logo { fill: var(--sol-paper); }
+
+/* ---------- overlays (fin de partida, bloqueo, cómo se juega) ---------- */
+.sol .overlay { position: absolute; inset: 0; background: rgba(15,33,36,0.55); display: grid; place-items: center; z-index: 2000; padding: 16px; }
+.sol .overlay[hidden] { display: none; }
+.sol .overlay__card { background: var(--ec-neutral-0); border-radius: 4px; padding: 28px 32px; text-align: center; max-width: 440px; width: 100%; color: #121212; max-height: 100%; overflow: auto; }
+.sol .overlay__kicker { margin: 0 0 4px; color: #737373; font-size: 14px; }
+.sol .overlay__title { font-family: var(--font-serif, "Confi Serif", serif); font-size: 30px; margin: 0 0 8px; color: #121212; }
+.sol .overlay__meta { color: #737373; margin: 0 0 18px; font-variant-numeric: tabular-nums; }
+.sol .overlay__text { text-align: left; font-size: 15px; line-height: 1.5; color: #121212; margin: 0 0 18px; }
+.sol .overlay__text p { margin: 0 0 10px; }
+.sol .overlay__text b { font-weight: 700; }
+.sol .overlay__actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.sol .overlay__btn { border: 0.7px solid #121212; background: var(--ec-neutral-0); color: #121212; padding: 10px 18px; font-weight: 600; font-size: 14px; border-radius: 2px; cursor: pointer; font-family: inherit; }
+.sol .overlay__btn--primary { background: #121212; color: #fff; }
+
+/* ---------- panel de exploración (?dev=1) ---------- */
+.sol-dev { position: fixed; left: 12px; bottom: 12px; z-index: 5000; background: rgba(255,255,255,0.97); border: 1px solid #DADADA; border-radius: 10px; width: 300px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); font: 13px/1.3 var(--font-sans, "Confi Sans", sans-serif); color: #121212; }
+.sol-dev__toggle { width: 100%; border: 0; background: transparent; text-align: left; padding: 10px 14px; cursor: pointer; font: inherit; font-weight: 700; }
+.sol-dev__toggle::after { content: "▾"; float: right; }
+.sol-dev.is-closed .sol-dev__toggle::after { content: "▸"; }
+.sol-dev.is-closed .sol-dev__body { display: none; }
+.sol-dev__body { padding: 0 14px 14px; display: grid; gap: 12px; max-height: 70vh; overflow: auto; }
+.sol-dev__group { display: grid; gap: 4px; }
+.sol-dev__label { font-weight: 700; color: #737373; font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; }
+.sol-dev label { display: flex; gap: 6px; align-items: center; cursor: pointer; }
+.sol-dev__btn { border: 1px solid #DADADA; background: #fff; border-radius: 6px; padding: 6px 12px; font: inherit; cursor: pointer; }
+
+/* móvil: como Google — mazo y descarte a la izquierda, bases a la derecha, tablero debajo a sangre (100 % del ancho de pantalla) */
+@media (max-width: 700px) {
+  .sol { margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); border-radius: 0; }
+  .sol .overlay__card { padding: 22px 20px; }
+  .sol-dev { width: auto; left: 12px; right: 12px; }
+}
