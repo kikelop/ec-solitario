@@ -3,7 +3,7 @@
 // y ratón "humano" (trayectorias curvas, aceleración, pausas de pensar). Los PNG van por pipe a ffmpeg (hace falta ffmpeg).
 // Uso: node tools/record-video.js [salida.mp4]   → por defecto tools/solitario-x.mp4
 // Requiere prototipo/fonts (copia de las Confi Sans/Serif, gitignored); record.html usa la opción cardW:131 del juego.
-const { chromium } = require('/Users/elopez/workspace/el-confidencial/innovacion/solitario/node_modules/playwright');
+const { chromium } = require('playwright');
 const { spawn } = require('child_process');
 const path = require('path');
 const W = 1920, H = 1080, FPS = 30, FRAME = 1000 / FPS, TOTAL_MS = 30000;
