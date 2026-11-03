@@ -1,0 +1,9 @@
+/* spider.css — ajustes del módulo para el Spider, encima de styles.css: 10 columnas, mazo en abanico a la izquierda
+   y 8 huecos para las escaleras completadas a la derecha, todo sobre la misma rejilla de columnas. */
+.sol.sol--spider .table { grid-template-rows: auto 1fr; grid-template-areas: "top" "tableau"; row-gap: calc(var(--gap) + 6px); }
+.sol.sol--spider .zone--top { display: grid; grid-area: top; grid-template-columns: repeat(10, var(--card-w)); gap: var(--gap); justify-content: center; }
+.sol.sol--spider .pile--stock { grid-column: 1; cursor: pointer; }
+.sol.sol--spider .pile--stock.is-empty { cursor: default; opacity: .7; }
+.sol.sol--spider .piles--done { grid-column: 3 / span 8; display: flex; gap: var(--gap); }
+.sol.sol--spider .zone--tableau { grid-template-columns: repeat(10, var(--card-w)); }
+.sol.sol--spider .card.is-stock { cursor: pointer; }

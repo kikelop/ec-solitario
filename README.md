@@ -20,6 +20,9 @@ ec-solitario/
     ├── cards.js            ← render SVG de la carta (cara y dorso)                                                  · copiar tal cual
     ├── styles.css          ← estilos del módulo bajo `.sol`, tokens ec.color.v2 y medidas                          · copiar tal cual
     ├── index.html          ← réplica del chasis de Juegos (cabecera, título, publicidad, meta, controles) con el módulo montado
+    ├── spider.js           ← módulo `Spider.mount(root, opts)`: Solitario Spider (2 barajas, 10 columnas, 1 · 2 · 4 palos), mismos hooks
+    ├── spider.css          ← rejilla de 10 columnas del Spider, se carga después de styles.css
+    ├── spider.html         ← la misma réplica del chasis con el Spider montado (`?palos=2` / `?palos=4` para la dificultad)
     ├── chassis.css         ← tokens y reglas copiados del CSS real de Juegos (solo para la réplica)
     ├── live.js             ← inyecta el módulo sobre la página real del crucigrama con Playwright (qué nodos del chasis se reutilizan)
     ├── assets/             ← isotipo EC e icono de renovar mazo
@@ -44,6 +47,7 @@ cd prototipo
 node live.js            # escritorio
 node live.js --mobile   # emulación iPhone
 node live.js --tablet   # 834×1194 táctil
+node live.js --spider   # Solitario Spider sobre la página real (--sol=palos2 | palos4)
 ```
 
 ## Fuentes
@@ -53,6 +57,10 @@ Las fuentes Confi Sans y Confi Serif son propiedad de El Confidencial y **no se 
 ## Integración con el chasis
 
 El módulo no pinta cabecera ni controles: se monta en un contenedor y habla con el chasis a través de atributos `data-sol` (valores de modo, tiempo, jugadas y reparto) y `data-sol-action` (deshacer, pista, nueva partida, salir, cómo se juega). El detalle de hooks, opciones de montaje y qué queda en back está en la especificación. Las animaciones usan GSAP 3.12.5 (cdnjs); sin GSAP todo sigue funcionando sin animar.
+
+## Solitario Spider (EINNO-765)
+
+Prototipo funcional en `prototipo/spider.html`, construido sobre el mismo módulo de carta, arrastre y animaciones del clásico. Reglas: una escalera del mismo palo (descendente, boca arriba) va sobre una carta de valor inmediatamente superior de cualquier palo o a una columna vacía; el mazo reparte 10 cartas (una por columna) y no se puede repartir con columnas vacías; las escaleras K→A del mismo palo salen solas del tablero a uno de los 8 huecos; se gana con las 8. Un toque mueve si hay un único buen destino (prefiere el mismo palo); con varios, se arrastra. Pista, deshacer, bloqueo, guardar y retomar y «Cómo se juega» funcionan igual que en el clásico. Geometría: escritorio carta 66 fija y 11 huecos iguales en la columna de 800; móvil carta 34 con calle 4 a sangre; solape 0,28 / 0,30 que se compacta hasta 0,22 en columnas muy largas. La dificultad (palos) es `opts.suits`, `?palos=` o el panel `?dev=1`; en producción la elegirían las ventanas intermedias de la plantilla común.
 
 ## Decisiones abiertas
 

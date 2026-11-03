@@ -77,6 +77,7 @@ Render de referencia: `prototipo/cards.js` (SVG inline). Reproducir exactamente.
 - Papel `rect` 0,5…99,5 con `rx 5.33` (= 4 px a 75 de ancho), relleno `neutral/25`, borde 1 px `azul/400`.
 - **Rango** en **Confi Serif Bold**, tamaño **27** (24 para el «10»), color del palo, arriba-izquierda en `translate(10.7, 31.3)` (línea base), y **espejado** abajo-derecha en `translate(89.3, 108.7) rotate(180)`. Medido: la tinta queda a **≈ 9 px** del borde superior e izquierdo a 75 de ancho, igual que el espejo respecto al inferior y derecho.
 - **J**: se desplaza **2,5 px a la derecha** (3,35 unidades) porque su gancho sobresale por la izquierda; así la tinta de K, Q, J y 10 arranca en el mismo punto.
+- **Palo de esquina** pequeño, tamaño **22** (27 en móvil), arriba-derecha centrado en la banda del rango (`x = 100 − 9 − 22/2`, `y = línea base − 0,35 × cuerpo`) y **espejado** abajo-izquierda con `rotate(180)`. Es lo que deja leer el palo cuando la carta está tapada en la columna y solo asoma su franja superior.
 - **Palo** grande centrado en (50, 70), tamaño **53** (icono normalizado a caja 100 y centrado; ver `SUITS[*].box`). También en J, Q y K: **no hay figuras**, solo la letra y el palo.
 - Móvil: rango `+10.8` unidades, línea base `+7.2` / `−7.2`, palo 48,7.
 

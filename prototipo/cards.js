@@ -1,7 +1,8 @@
 /*
  * cards.js — render SVG de las cartas del Solitario EC (diseño final, Figma «Diseño final» 27/10/2026).
  * Caja de dibujo 100 × 140 (ratio 5:7), se escala por CSS. Colores en styles.css (tokens ec.color.v2).
- *   - Cara: rango en Confi Serif Bold arriba-izquierda y espejado abajo-derecha, palo grande centrado (también en J/Q/K).
+ *   - Cara: rango en Confi Serif Bold arriba-izquierda y espejado abajo-derecha, palo pequeño arriba-derecha y espejado
+ *     abajo-izquierda (para leer el palo con la carta tapada en la columna), palo grande centrado (también en J/Q/K).
  *   - Dorso: marco neutral/25 con borde azul/400, interior del color del tapete, isotipo EC.
  * Los iconos de palo son los de Kike ([INNO] Solitario, nodo 10:580), normalizados a una caja 100×100 y centrados.
  */
@@ -16,8 +17,8 @@
   // isotipo EC (Figma [INNO] Solitario 13:587), caja 831×526
   const EC_LOGO = 'M415.719 262.597C415.719 98.2176 505.577 0 657.417 0C693.626 0 752.839 11.8476 809.949 29.9525V178.33H784.177L756.327 105.193C732.631 43.903 712.449 27.8753 657.417 27.8753C582.176 27.8753 539.71 112.168 539.71 262.623C539.71 413.078 575.227 497.371 647.672 497.371C708.962 497.371 741.71 456.263 747.274 370.585H830.849C821.104 466.726 750.044 525.22 644.877 525.22C497.909 525.22 415.719 431.183 415.719 262.623M0 491.755L31.3373 486.882C48.0574 484.087 52.2374 477.137 52.2374 450.673V75.9327C52.2374 49.4678 48.0574 42.4926 31.3373 39.6973L0 34.8249V11.1296H360.123V161.585H337.145L320.425 109.347C300.936 48.7498 286.985 39.0049 218.72 39.0049H202C169.97 39.0049 163.687 45.2621 163.687 77.3175V247.288H182.485C224.285 247.288 234.03 241.723 244.467 211.078L260.495 163.021H282.087V359.456H260.495L244.467 311.398C234.03 280.754 224.259 275.189 182.485 275.189H163.687V449.313C163.687 481.343 169.945 487.626 202 487.626H232.645C302.987 487.626 318.322 476.471 334.35 415.873L351.07 351.096H374.047V515.476H0V491.78V491.755Z';
 
-  const suitPath = (s, x, y, size) =>
-    `<g transform="translate(${x - size / 2},${y - size / 2}) scale(${size / 100})"><path d="${SUITS[s].path}" transform="${SUITS[s].box}" /></g>`;
+  const suitPath = (s, x, y, size, rot = 0) =>
+    `<g transform="rotate(${rot},${x},${y}) translate(${x - size / 2},${y - size / 2}) scale(${size / 100})"><path d="${SUITS[s].path}" transform="${SUITS[s].box}" /></g>`;
 
   function faceSVG(rank, suit) {
     // móvil (carta de ~47 px): rango 5 px más grande, ~3 px más de aire arriba y abajo y palo 2 px más pequeño (unidades de la caja de 140)
@@ -26,10 +27,15 @@
     const nx = rank === 'J' ? -3.35 : 0;            // el gancho de la J sobresale por la izquierda: 2,5 px a la derecha para alinear su tinta con K y Q
     const py = mobile ? 7.2 : 0;
     const pip = mobile ? 48.7 : 53;
+    // palo de esquina: centrado en la banda vertical del rango (altura de mayúscula ≈ 0,7 del cuerpo), margen lateral igual al del rango
+    const cs = mobile ? 27 : 22;
+    const cy = 31.3 + py - rankSize * 0.35;
+    const cx = 100 - 9 - cs / 2;
     const idx = (x, y, rot) => `<text class="rank" transform="translate(${x},${y}) rotate(${rot})" font-size="${rankSize}" text-anchor="start">${rank}</text>`;
     return `<svg class="face face--${SUITS[suit].color}" viewBox="0 0 100 140" aria-hidden="true">
       <rect class="paper" x="0.5" y="0.5" width="99" height="139" rx="5.33" />
-      ${suitPath(suit, 50, 70, pip)}${idx(10.7 - nx, 31.3 + py, 0)}${idx(89.3 + nx, 108.7 - py, 180)}</svg>`;
+      ${suitPath(suit, 50, 70, pip)}${idx(10.7 - nx, 31.3 + py, 0)}${idx(89.3 + nx, 108.7 - py, 180)}
+      ${suitPath(suit, cx, cy, cs)}${suitPath(suit, 100 - cx, 140 - cy, cs, 180)}</svg>`;
   }
 
   function backSVG() {

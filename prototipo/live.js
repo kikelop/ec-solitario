@@ -6,22 +6,23 @@
  *   node live.js            -> escritorio (ventana maximizada)
  *   node live.js --mobile   -> emulación iPhone
  *   node live.js --tablet   -> 834×1194 táctil
+ *   node live.js --spider   -> Solitario Spider (spider.js + spider.css); --sol=palos2 | palos4 para la dificultad
  *   node live.js --sol=verde | --sol=pad8 | --sol=pad16 | --sol=lateral | --sol=alto | --sol=roba3 | --sol=aleatorio  -> variantes
  */
 const { chromium, devices } = require('playwright');
 const fs = require('fs'), path = require('path'), os = require('os');
 const argv = process.argv.slice(2);
-const MOBILE = argv.includes('--mobile'), TABLET = argv.includes('--tablet');
+const MOBILE = argv.includes('--mobile'), TABLET = argv.includes('--tablet'), SPIDER = argv.includes('--spider');
 const VARIANT = (argv.find(a => a.startsWith('--sol=')) || '--sol=').slice(6); // verde · pad8 · pad16 · lateral (coma para combinar)
 const URL = 'https://juegos.elconfidencial.com/crucigrama/diario/facil';
 const DIR = __dirname;
-const PROFILE = path.join(os.homedir(), '.cache', 'ec-solitario-live-' + (MOBILE ? 'mobile' : TABLET ? 'tablet' : 'desk') + (VARIANT ? '-' + VARIANT.replace(/[^a-z0-9]/g, '') : ''));
+const PROFILE = path.join(os.homedir(), '.cache', 'ec-solitario-live-' + (MOBILE ? 'mobile' : TABLET ? 'tablet' : 'desk') + (VARIANT ? '-' + VARIANT.replace(/[^a-z0-9]/g, '') : '') + (SPIDER ? '-spider' : ''));
 
 function bundle() {
   const assets = {};
   
-  const css = fs.readFileSync(path.join(DIR, 'styles.css'), 'utf8').replace(/@font-face\{[^}]*\}/g, '');
-  const js = `window.__solAssets=${JSON.stringify(assets)};window.__solVariant=${JSON.stringify(VARIANT)};\n` + fs.readFileSync(path.join(DIR, 'cards.js'), 'utf8') + '\n' + fs.readFileSync(path.join(DIR, 'game.js'), 'utf8');
+  const css = fs.readFileSync(path.join(DIR, 'styles.css'), 'utf8').replace(/@font-face\{[^}]*\}/g, '') + (SPIDER ? '\n' + fs.readFileSync(path.join(DIR, 'spider.css'), 'utf8') : '');
+  const js = `window.__solAssets=${JSON.stringify(assets)};window.__solVariant=${JSON.stringify(VARIANT)};window.__solSpider=${SPIDER};\n` + fs.readFileSync(path.join(DIR, 'cards.js'), 'utf8') + '\n' + fs.readFileSync(path.join(DIR, SPIDER ? 'spider.js' : 'game.js'), 'utf8');
   return { css, js };
 }
 
@@ -40,15 +41,16 @@ async function enterGame(page) {
 // cirugía sobre el DOM de producción: se ejecuta en la página
 function surgery() {
   const q = s => document.querySelector(s);
-  const title = q('[class*=_balconyTitle_]'); if (title) title.textContent = 'Solitario';
-  document.title = 'Solitario online gratis · El Confidencial';
+  const SP = !!window.__solSpider;
+  const title = q('[class*=_balconyTitle_]'); if (title) title.textContent = SP ? 'Solitario Spider' : 'Solitario';
+  document.title = (SP ? 'Solitario Spider' : 'Solitario') + ' online gratis · El Confidencial';
   const area = q('[class*=_gameArea_]'); if (!area || area.dataset.sol) return false;
   area.dataset.sol = '1';
   // barra de meta: reutiliza los items existentes
   const meta = area.querySelector('[class*=_meta_]');
   if (meta) {
     const items = [...meta.querySelectorAll('[class*=_item_]')];
-    const spec = [['Modo', 'mode', 'Partida libre'], ['Tiempo', 'time', '00:00'], ['Jugadas', 'moves', '0'], ['Reparto', 'draw', 'Roba 1']];
+    const spec = [['Modo', 'mode', 'Partida libre'], ['Tiempo', 'time', '00:00'], ['Jugadas', 'moves', '0'], SP ? ['Palos', 'draw', '1 palo'] : ['Reparto', 'draw', 'Roba 1']];
     spec.forEach(([label, key, val], i) => {
       let it = items[i]; if (!it) { it = items[0].cloneNode(true); meta.insertBefore(it, meta.querySelector('[class*=_help_]')); }
       it.querySelector('[class*=_label_]').textContent = label; const v = it.querySelector('[class*=_value_]'); v.textContent = val; v.dataset.sol = key;
@@ -75,7 +77,7 @@ function surgery() {
     const help = (meta || area).querySelector('[class*=_help_]'); if (help) { help.dataset.solAction = 'help'; const h2 = help.cloneNode(true); help.replaceWith(h2); } // clon: quita los handlers de React del tutorial del crucigrama
     const exit = row.querySelector('[class*=_exit_]'); if (exit) exit.dataset.solAction = 'exit';
   }
-  Solitaire.mount(mountEl);
+  (SP ? Spider : Solitaire).mount(mountEl);
   return true;
 }
 
@@ -107,7 +109,7 @@ function surgery() {
   await page.goto(URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
 
   let timer = null;
-  for (const f of ['styles.css', 'cards.js', 'game.js']) fs.watch(path.join(DIR, f), () => { clearTimeout(timer); timer = setTimeout(() => { console.log('  cambio en', f, '→ recargo'); page.reload(); }, 200); });
+  for (const f of ['styles.css', 'cards.js', 'game.js', 'spider.js', 'spider.css']) fs.watch(path.join(DIR, f), () => { clearTimeout(timer); timer = setTimeout(() => { console.log('  cambio en', f, '→ recargo'); page.reload(); }, 200); });
   console.log('\n  Guarda styles.css / cards.js / game.js y se recarga sola. Cierra la ventana para terminar.\n');
   await new Promise(r => ctx.on('close', r));
   process.exit(0);
