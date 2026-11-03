@@ -467,7 +467,8 @@
 
     root.dataset.felt = opts.felt; root.dataset.red = opts.red;
     applyLayoutMode();
-    const saved = (firstDeal || opts.persist === false) ? null : loadSave();
+    let saved = (firstDeal || opts.persist === false) ? null : loadSave();
+    if (saved && SUITS_BY_LEVEL[qp] && saved.suits !== qp) saved = null; // ?palos= explícito distinto de la partida guardada: partida nueva en ese nivel
     const start = () => requestAnimationFrame(() => requestAnimationFrame(() => saved ? resumeGame(saved) : newGame()));
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(start); else start();
     const api = { newGame, undo, hint, get state() { return S; }, debug: { listMoves, canDeal, checkState, move: moveCards, deal: dealStock, get busy() { return busy; }, get finished() { return finished; } } };
