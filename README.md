@@ -6,6 +6,7 @@ Prototipo funcional y especificación de diseño del Solitario clásico para la 
 **Jira:** EINNO-763 (diseño) · EINNO-759 (HU)
 **Figma:** `[INNO] Solitario` · `IytFyWTstf48YiPHLafC7K` · página «Diseño final» (escritorio, tablet, móvil y sección «Estados · escritorio» con anotaciones de Dev Mode)
 **Prototipo publicado:** https://ec-solitario.vercel.app (pide login de Vercel)
+**Spider publicado:** https://ec-solitario.vercel.app/spider.html (mismo login; `?palos=1|2|4` para el nivel)
 
 ## Qué hay
 
@@ -14,7 +15,9 @@ ec-solitario/
 ├── README.md
 ├── entregable/
 │   ├── ESPECIFICACION.md   ← especificación 1:1 (chasis, tokens, geometría, carta, reglas, animaciones, accesibilidad)
-│   └── icons/              ← palos, isotipo EC, renovar mazo e iconos de la fila de controles (SVG)
+│   ├── icons/              ← palos, isotipo EC, renovar mazo, iconos de la fila de controles e iconos de juego
+│   │                          (`juego-solitario.svg`, `juego-solitario-spider.svg`; `_opcion-*` son alternativas descartadas)
+│   └── og/                 ← imagen de compartir 1200×630 del Spider (`og-solitario-spider.png`)
 └── prototipo/
     ├── game.js             ← módulo `Solitaire.mount(root, opts)`: reglas, interacción, animaciones, persistencia  · copiar tal cual
     ├── cards.js            ← render SVG de la carta (cara y dorso)                                                  · copiar tal cual
